@@ -2,6 +2,7 @@ package main
 
 import (
 	account_controller "github.com/JusSix1/TwitterAccountDataBase/controller/account"
+	admin_controller "github.com/JusSix1/TwitterAccountDataBase/controller/admin"
 	login_controller "github.com/JusSix1/TwitterAccountDataBase/controller/login"
 	order_controller "github.com/JusSix1/TwitterAccountDataBase/controller/order"
 	user_controller "github.com/JusSix1/TwitterAccountDataBase/controller/user"
@@ -23,12 +24,12 @@ func main() {
 	r.POST("/users", user_controller.CreateUser)
 	r.GET("/genders", user_controller.ListGenders)
 
-	// // login Admin Route
-	// r.POST("/login/admin", login_controller.LoginAdmin)
+	// login Admin Route
+	r.POST("/login/admin", login_controller.LoginAdmin)
 
-	router := r.Group("/")
+	routerUser := r.Group("/")
 	{
-		protected := router.Use(middlewares.Authorizes())
+		protected := routerUser.Use(middlewares.AuthorizesUser())
 		{
 			protected.GET("/user/:email", user_controller.GetUser)
 			protected.GET("/usersprofilepicture/:email", user_controller.GetUserProfilePicture)
@@ -44,6 +45,23 @@ func main() {
 
 			protected.POST("/order/:email", order_controller.CreateOrder)
 			protected.GET("/order/:email", order_controller.GetOrder)
+		}
+	}
+
+	routerAdmin := r.Group("/")
+	{
+		protected := routerAdmin.Use(middlewares.AuthorizesAdmin())
+		{
+			protected.POST("/admin", admin_controller.CreateAdmin)
+			protected.GET("/admin-list", admin_controller.GetAdminList)
+			protected.PATCH("/admin-right/:adminname", admin_controller.UpdateBigAdmin)
+			protected.DELETE("/admin/:adminname", admin_controller.DeleteAdmin)
+
+			protected.GET("/all-User-admin", user_controller.GetUserList)
+
+			protected.GET("/all-account-admin", account_controller.GetAllAccountAdmin)
+
+			protected.GET("/all-order-admin", order_controller.GetOrderAdmin)
 		}
 	}
 

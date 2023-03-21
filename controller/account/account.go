@@ -123,13 +123,25 @@ func GetUnsoldAccount(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": account})
 }
 
-// GET /account-in-order
+// GET /account-in-order/:id
 func GetAccountInOrder(c *gin.Context) {
 	var account []entity.Account
 
 	id := c.Param("id")
 
 	if err := entity.DB().Raw("SELECT * FROM accounts WHERE order_id = ? ORDER BY id_account DESC", id).Find(&account).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": account})
+}
+
+// GET /all-account-admin
+func GetAllAccountAdmin(c *gin.Context) {
+	var account []entity.Account
+
+	if err := entity.DB().Raw("SELECT * FROM accounts").Find(&account).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

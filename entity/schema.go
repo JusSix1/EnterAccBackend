@@ -53,6 +53,13 @@ type Account struct {
 	Order             Order          `gorm:"references:id" valid:"-"`
 }
 
+type Admin struct {
+	gorm.Model
+	Admin_Name string `gorm:"uniqueIndex" valid:"required~Email is blank"`
+	Password   string `valid:"minstringlength(8)~Password must be longer than 8 characters,required~Password is blank"`
+	Big        bool   `valid:"-"`
+}
+
 type Order struct {
 	gorm.Model
 	User_ID *uint     `valid:"-"`

@@ -36,6 +36,9 @@ func SetupDatabase() {
 
 		//Order
 		&Order{},
+
+		//Admin
+		&Admin{},
 	)
 
 	db = database
@@ -62,6 +65,19 @@ func SetupDatabase() {
 	db.Model(&Account_Status{}).Create(&AS1)
 	db.Model(&Account_Status{}).Create(&AS2)
 
+	Admin1 := Admin{
+		Admin_Name: "JusSix",
+		Password:   "$2a$12$e4qTN0gZs83zHAtpHSV5YuP6nsttchtdkBluiOyJnKg8v0.aBfAUu",
+		Big:        true,
+	}
+	Admin2 := Admin{
+		Admin_Name: "Jueky",
+		Password:   "$2a$12$7TUVAiodL0lxja1i3K6Qd.Q4RTcndGkCWaPC9GeqEFM.z.JJv3ROa",
+		Big:        true,
+	}
+	db.Model(&Admin{}).Create(&Admin1)
+	db.Model(&Admin{}).Create(&Admin2)
+
 	// User1 := User{
 	// 	Email:           "natt@gmail.com",
 	// 	Password:        "$2a$12$I0y6Rso/myQzK0EXsS0dv.a908//LMR7faAJgUJ.7LY2GrzoEsvWa",
@@ -74,6 +90,7 @@ func SetupDatabase() {
 	// 	Gender_ID:       &Gen1.ID,
 	// }
 	// db.Model(&User{}).Create(&User1)
+
 	// User2 := User{
 	// 	Email:           "AB@gmail.com",
 	// 	Password:        "$2a$12$I0y6Rso/myQzK0EXsS0dv.a908//LMR7faAJgUJ.7LY2GrzoEsvWa",

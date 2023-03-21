@@ -88,3 +88,15 @@ func GetOrder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": order})
 }
+
+// GET /all-order-admin
+func GetOrderAdmin(c *gin.Context) {
+	var order []entity.Order
+
+	if err := entity.DB().Raw("SELECT * FROM orders").Find(&order).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": order})
+}
