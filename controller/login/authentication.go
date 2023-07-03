@@ -66,7 +66,7 @@ func LoginUser(c *gin.Context) {
 	tokenResponse := LoginResponseUser{
 		Token:    signedToken,
 		Email:    user.Email,
-		Position: "jJAviabisdvsBSDbwbvjLVBUbev",
+		Position: "jJAviabisdvsBSDbwbvjBEBwnfndbERnERBAELVBUbev",
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": tokenResponse})

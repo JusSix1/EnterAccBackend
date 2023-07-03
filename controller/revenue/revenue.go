@@ -8,18 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// POST /revenue
+// POST /revenue/:email
 func CreateRevenue(c *gin.Context) {
 	var revenue entity.Revenue
 	var user entity.User
+
+	email := c.Param("email")
 
 	if err := c.ShouldBindJSON(&revenue); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", revenue.User_ID).First(&user); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Please select gender"})
+	if tx := entity.DB().Where("email = ?", email).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
 	}
 
