@@ -66,7 +66,7 @@ func LoginUser(c *gin.Context) {
 	tokenResponse := LoginResponseUser{
 		Token:    signedToken,
 		Email:    user.Email,
-		Position: "User",
+		Position: "jJAviabisdvsBSDbwbvjLVBUbev",
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": tokenResponse})
@@ -128,7 +128,7 @@ func LoginAdmin(c *gin.Context) {
 	tokenResponse := LoginResponseAdmin{
 		Token:      signedToken,
 		Admin_Name: admin.Admin_Name,
-		Position:   "Admin",
+		Position:   "dvasVIvgbvwuvBYeVFQHGACCQcyascqtyvchjq",
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": tokenResponse})

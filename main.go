@@ -5,6 +5,7 @@ import (
 	admin_controller "github.com/JusSix1/TwitterAccountDataBase/controller/admin"
 	login_controller "github.com/JusSix1/TwitterAccountDataBase/controller/login"
 	order_controller "github.com/JusSix1/TwitterAccountDataBase/controller/order"
+	revenue_controller "github.com/JusSix1/TwitterAccountDataBase/controller/revenue"
 	user_controller "github.com/JusSix1/TwitterAccountDataBase/controller/user"
 	"github.com/JusSix1/TwitterAccountDataBase/entity"
 	"github.com/JusSix1/TwitterAccountDataBase/middlewares"
@@ -45,6 +46,8 @@ func main() {
 
 			protected.POST("/order/:email", order_controller.CreateOrder)
 			protected.GET("/order/:email", order_controller.GetOrder)
+
+			protected.POST("/revenue/:email", revenue_controller.CreateRevenue)
 		}
 	}
 

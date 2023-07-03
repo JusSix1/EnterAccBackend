@@ -37,6 +37,9 @@ func SetupDatabase() {
 		//Order
 		&Order{},
 
+		//Revenue
+		&Revenue{},
+
 		//Admin
 		&Admin{},
 	)
