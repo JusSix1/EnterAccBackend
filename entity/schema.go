@@ -72,7 +72,7 @@ type Revenue struct {
 	gorm.Model
 	User_ID *uint   `valid:"-"`
 	User    User    `gorm:"references:id" valid:"-"`
-	Income  float32 `valid:"required~Income is blank"`
+	Income  float64 `valid:"required~Income is blank"`
 }
 
 func init() {
