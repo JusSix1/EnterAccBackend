@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/JusSix1/TwitterAccountDataBase/entity"
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,9 +20,14 @@ func CreateOrder(c *gin.Context) {
 		Account_ID uint
 	}
 
-	var accountToOrder []AccountToOrder
+	var payload struct {
+		AccountToOrder []AccountToOrder `json:"accountToOrder"`
+		DataSlip       struct {
+			Slip string `json:"Slip"`
+		} `json:"dataSlip"`
+	}
 
-	if err := c.ShouldBindJSON(&accountToOrder); err != nil {
+	if err := c.ShouldBindJSON(&payload); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -34,6 +40,7 @@ func CreateOrder(c *gin.Context) {
 	// create new object for create new record
 	newOrder := entity.Order{
 		User_ID: &user.ID,
+		Slip:    payload.DataSlip.Slip,
 	}
 
 	if err := entity.DB().Create(&newOrder).Error; err != nil {
@@ -46,7 +53,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	for i := 0; i < len(accountToOrder); i++ {
+	for i := 0; i < len(payload.AccountToOrder); i++ {
 
 		if err := entity.DB().Raw("SELECT * FROM account_statuses WHERE status = 'Sold'").Find(&accoountStatus).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -59,7 +66,7 @@ func CreateOrder(c *gin.Context) {
 			Order_ID:          &order.ID,
 		}
 
-		if err := entity.DB().Where("id = ?", accountToOrder[i].Account_ID).Updates(&updateAccount).Error; err != nil {
+		if err := entity.DB().Where("id = ?", payload.AccountToOrder[i].Account_ID).Updates(&updateAccount).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -82,6 +89,34 @@ func GetOrder(c *gin.Context) {
 	}
 
 	if err := entity.DB().Raw("SELECT * FROM orders WHERE user_id = ? ORDER BY id DESC", user.ID).Find(&order).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": order})
+}
+
+// PATCH /order
+func UpdateOrder(c *gin.Context) {
+	var order entity.Order
+
+	if err := c.ShouldBindJSON(&order); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// update user fields that are allowed to be updated
+	updateOrder := entity.Order{
+		Slip: order.Slip,
+	}
+
+	// validate user
+	if _, err := govalidator.ValidateStruct(updateOrder); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := entity.DB().Where("id = ?", order.ID).Updates(&updateOrder).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

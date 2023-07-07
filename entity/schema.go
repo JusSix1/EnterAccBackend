@@ -66,6 +66,7 @@ type Order struct {
 	User_ID *uint     `valid:"-"`
 	User    User      `gorm:"references:id" valid:"-"`
 	Account []Account `gorm:"foreignKey:Order_ID"`
+	Slip    string    `valid:"image_valid~Please change the picture"`
 }
 
 type Revenue struct {

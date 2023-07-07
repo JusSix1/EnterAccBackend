@@ -46,8 +46,11 @@ func main() {
 
 			protected.POST("/order/:email", order_controller.CreateOrder)
 			protected.GET("/order/:email", order_controller.GetOrder)
+			protected.PATCH("/order", order_controller.UpdateOrder)
 
 			protected.POST("/revenue/:email", revenue_controller.CreateRevenue)
+			protected.GET("/revenue/:email", revenue_controller.GetRevenue)
+			protected.PATCH("/revenue", revenue_controller.UpdateRevenue)
 		}
 	}
 
