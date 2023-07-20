@@ -216,6 +216,52 @@ func UpdateUserPassword(c *gin.Context) {
 
 }
 
+// PATCH /passwordFromAdmin
+func UpdateUserPasswordFromAdmin(c *gin.Context) {
+
+	type Password struct {
+		ID          uint
+		NewPassword string `valid:"minstringlength(8)~Password must be longer than 8 characters,required~Password is blank"`
+	}
+
+	var password Password
+
+	if err := c.ShouldBindJSON(&password); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// validate PasswordUser
+	if _, err := govalidator.ValidateStruct(password); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updatePassword := entity.User{
+		Password: password.NewPassword,
+	}
+
+	if !(password.NewPassword[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(updatePassword.Password), 12)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+			return
+		}
+		print("HASH!!!!")
+		updatePassword.Password = string(hashPassword)
+	} else {
+		print("NOT HASH!!!")
+	}
+
+	if err := entity.DB().Where("id = ?", password.ID).Updates(&updatePassword).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": password})
+
+}
+
 // DELETE /users/:email
 func DeleteUser(c *gin.Context) {
 	email := c.Param("email")

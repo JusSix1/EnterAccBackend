@@ -64,10 +64,7 @@ func main() {
 			protected.DELETE("/admin/:adminname", admin_controller.DeleteAdmin)
 
 			protected.GET("/all-User-admin", user_controller.GetUserList)
-
-			protected.GET("/all-account-admin", account_controller.GetAllAccountAdmin)
-
-			protected.GET("/all-order-admin", order_controller.GetOrderAdmin)
+			protected.PATCH("/passwordFromAdmin", user_controller.UpdateUserPasswordFromAdmin)
 		}
 	}
 
